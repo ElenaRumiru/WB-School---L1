@@ -1,0 +1,80 @@
+<!-- // Задача: Добавить анимацию для элемента: Напишите функцию, которая добавляет анимацию для элемента на веб-странице,
+// например, плавное изменение его положения или размера. -->
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script src="https://js.cx/libs/animate.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="field">
+        <p>Kick the ball</p>
+        <img src="https://js.cx/clipart/ball.svg" width="40" height="40" id="ball">
+    </div>
+
+    <style>
+        /* Минимум стиля. Черное нижнее подчеркивание, отступы */
+        #field {
+            height: 200px;
+            border-bottom: 3px black groove;
+            position: relative;
+            margin: 20px;
+        }
+        /* Мяч размешаем абсолютно */
+        #ball {
+            position: absolute;
+            left: 20px;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        // принимает функцию расчёта времени и возвращает преобразованный вариант
+        function makeEaseOut(timing) {
+            return function (timeFraction) {
+                return 1 - timing(1 - timeFraction);
+            }
+        }
+        // Создаем отскоки
+        function bounce(timeFraction) {
+            for (let a = 0, b = 1; 1; a += b, b /= 2) {
+                if (timeFraction >= (7 - 4 * a) / 11) {
+                    return -Math.pow((11 - 6 * a - 11 * timeFraction) / 4, 2) + Math.pow(b, 2)
+                }
+            }
+        }
+        // Создаем ускорение, возведя в степень
+        function quad(timeFraction) {
+            return Math.pow(timeFraction, 2);
+        }
+
+        // Добавляем обработчик клика по мячу
+        ball.onclick = function () {
+
+            let height = field.clientHeight - ball.clientHeight;
+            let width = 900;
+            // Добавляем анимацию движения по вертикали
+            animate({
+                duration: 2000,
+                timing: makeEaseOut(bounce),
+                draw: function (progress) {
+                    ball.style.top = height * progress + 'px'
+                }
+            });
+            // Добавляем анимацию движения по горизонтали
+            animate({
+                duration: 2000,
+                timing: makeEaseOut(quad),
+                draw: function (progress) {
+                    ball.style.left = width * progress + "px"
+                }
+            });
+        }
+    </script>
+
+
+</body>
+
+</html>

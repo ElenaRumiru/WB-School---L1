@@ -1,0 +1,75 @@
+<!-- Задача: Создать и добавить стиль для элемента: 
+Напишите функцию, которая создает новый элемент, добавляет его в DOM 
+и устанавливает для него стиль с помощью CSS. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Манипуляция стилями</title>
+</head>
+
+<body>
+    <div class="container">
+
+    </div>
+    <style>
+        .red {
+            color: green;
+        }
+    </style>
+    <script>
+        // Задаем какой-то стиль для body
+        document.body.style.backgroundColor = prompt('background color?', 'yellow');
+        document.body.style.margin = '20px';
+        
+        // Находим контейнер
+        const container = document.querySelector('.container');
+        // Функция создающая заголовок
+        function createH() {
+            // Создаем новые элементы 
+            const h1 = document.createElement('h1');            
+            container.append(h1);
+            // Добавляем классы
+            h1.classList.add('green');  
+            // Добавляем нужный тексты          
+            h1.textContent = 'Hello, World!';
+        };
+
+        // Функция создающая параграф
+        function createP() {
+            // Создаем новые элементы 
+            const p = document.createElement('p');    
+            container.append(p);
+            // Добавляем классы
+            p.classList.add('green');  
+            // Добавляем нужный тексты         
+            p.textContent = 'It is a wonderful day!';
+            // Задаем стили другим способом
+            p.setAttribute('style', 'padding: 10px; border: 1px solid green;');
+        };
+        //Функция создающая див
+        function createDiv() {
+            // Создаем новые элементы 
+            const div = document.createElement('div');
+            // Добавляем в контейнер
+            container.append(div);
+            // Добавляем классы
+            div.classList.add('square');  
+            // Задаем стили другим способом
+            const square = document.querySelector('.square');
+            square.style.width = '170px';
+            square.style.height = '170px';
+            square.style.backgroundColor = 'green';
+        };
+
+        createH();
+        createP();
+        createDiv();   
+        
+    </script>
+</body>
+
+</html>

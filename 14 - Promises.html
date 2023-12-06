@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise img</title>
+</head>
+<body>
+    <div>
+      <span class="senior">Senior</span>
+      <span class="junior">Junior</span>
+
+    </div>
+    <style>
+       body {
+            margin: 20px 20px;
+            background-color: #cac7c7;
+        }
+        span {
+          position: absolute;
+          z-index: 4;
+          font-size: 36px;
+          top: 90px;
+        }
+        .senior {
+          left: 150px;
+        }
+        .junior {
+          left: 280px;
+        }
+    </style>
+    <script>
+    // Задача на промисы: напишите функцию, которая принимает URL изображения и возвращает промис, 
+    // который разрешается с данными об изображении, когда оно загружено. 
+    // Когда говорится "промис разрешается с данными об изображении", 
+    // это означает, что промис должен быть успешно выполнен (resolved) 
+    // с данными об изображении после того, как изображение будет загружено.
+
+
+    function loadImage(url)
+    {
+      //объект "обещание"
+      return new Promise(function(resolve, reject)
+      {
+        let img = new Image(480, 700);
+        img.onload = function()
+        {
+          alert(`Изображение загружено, размеры ${img.width}x${img.height}`);
+          //в случае успешной загрузки изображения, результат "обещания" будет url этого изображения
+          return resolve(url);
+        }
+        img.onerror = function()
+        {
+          alert("Ошибка во время загрузки изображения");
+          //в случае не успешной загрузки изображения, результат "обещания" будет url этого изображения
+          return reject(url);
+        }
+        img.src = url;
+        document.body.appendChild(img);
+      });
+    }
+
+    loadImage('https://zagony.ru/admin_new/foto/2022-5-25/1653480552/kartinki-so-smyslom-14-foto_1.jpg');
+    </script>
+    
+</body>
+</html>

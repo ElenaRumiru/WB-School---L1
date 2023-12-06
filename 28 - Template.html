@@ -1,0 +1,72 @@
+<!-- Задача: Создать и добавить элемент с использованием шаблонов: 
+Напишите функцию, которая создает новый элемент с использованием шаблонов 
+(например, с помощью тега <template>) и добавляет его в DOM. -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+</head>
+
+<body>
+
+
+    <div class="pool pool-1">
+
+    </div>
+
+    <template id="element-template">
+        <div class="el">
+            <span><!--Номер элемента--></span>
+        </div>
+    </template>
+
+    <style>
+        .el {
+            background: #bbbbff;
+            border: 20px solid #6666FF;
+            box-sizing: border-box;
+            color: rgba(255, 255, 255, 0.9);
+            display: inline-block;
+            font: bold 60px Arial;
+            line-height: 110px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            text-align: center;
+            height: 150px;
+            width: 150px;
+        }
+
+        .pool {
+            background: #e9e9f0;
+            box-sizing: border-box;
+            height: 330px;
+            margin: 20px;
+            padding: 10px;
+        }
+    </style>
+
+
+
+    <script>
+        const pool1 = document.querySelector('.pool-1');
+
+        const fragment = document.createDocumentFragment(); // Создаём "коробочку"
+
+        for (let i = 0; i < 16; i++) {
+            const newElement = document.createElement('div');
+            newElement.classList.add('el');
+            newElement.innerHTML = '<span>' + i + '</span>';
+
+            fragment.appendChild(newElement); // Складываем созданные элементы в "коробочку"
+        }
+
+        pool1.appendChild(fragment); // И только в конце отрисовываем всё из "коробочки"
+
+
+    </script>
+</body>
+
+</html>

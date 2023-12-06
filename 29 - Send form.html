@@ -1,0 +1,63 @@
+<!-- // Задача: Взаимодействие с формами: Напишите функцию, которая получает данные из формы 
+// на веб-странице и выполняет определенные действия с этими данными, например, 
+// отправляет их на сервер или отображает всплывающее окно с результатами. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Form</title>
+</head>
+
+<body>
+    <div>
+        <form id="myForm">
+            <label for="myName">Введите имя:</label>
+            <input id="myName" name="name" value="Елена" />
+            <input type="submit" value="Отправить" />
+        </form>
+    </div>
+
+    <script>
+        // Я взяла пример отправки формы
+        window.addEventListener("load", function () {
+            function sendData() {
+                const XHR = new XMLHttpRequest();
+
+                // СВязываем объект FormData и элемент form
+                const FD = new FormData(form);
+
+                // Определяем что происходит при успешной загрузке данных
+                XHR.addEventListener("load", function (event) {
+                    alert(event.target.responseText);
+                });
+
+                // Определяем чо произойдет при ошибке
+                XHR.addEventListener("error", function (event) {
+                    alert("Ой! Что-то пошло не так.");
+                });
+
+                // Настраиваем POST запрос на указанный адрес
+                XHR.open("POST", "https://api.deepl.com/v2/translate");
+
+                // Отправляем по адресу выше именно форму
+                XHR.send(FD);
+
+            }
+
+            // Находим элемент в HTML
+            const form = document.getElementById("myForm");
+
+            // и добавляем слушатель событий на отправку формы
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                sendData();
+            });
+        });
+    </script>
+</body>
+
+</html>

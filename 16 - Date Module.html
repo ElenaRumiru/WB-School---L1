@@ -1,0 +1,30 @@
+<!-- Задача на модули и использование внешних библиотек: напишите модуль, который экспортирует функцию для работы с датами. 
+Внутри модуля используйте внешнюю библиотеку Moment.js для удобной работы с датами. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16</title>
+</head>
+<body>
+    <div>
+        <h2>When was/will this day? </h2>
+        <input type="date" name="date" class="datefrom" value="2023-12-02">
+        <span>
+            <span class="countday">a day ago</span>
+        </span>
+    
+    </div>
+    <style>
+        div {
+            margin: 20px 20px;
+        }
+        input {
+            margin-right: 10px;
+        }
+    </style>
+    <script type="module" src="./16.js"></script>
+    <script type="text/JavaScript" src="https://MomentJS.com/downloads/moment.js"></script>
+</body>
+</html>

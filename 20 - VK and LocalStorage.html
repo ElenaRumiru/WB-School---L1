@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VK API</title>
+    <script src="./19.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="wrapper">
+            <h2>Максимальный объем Localstorage</h2>
+
+            <div id="result" class="result"></div>
+
+            <button id="btnStopTest">СТОП</button>
+        </div>
+        <div class="wrapper">
+            <h2>Используемый объем Localstorage</h2>
+
+            <div>
+                <span id="storage-now" class="storage-now">Нажми, чтобы посчитать</span>
+            </div>
+
+            <button id="btnStartTest" onclick="getLocalStorageSize()">СТАРТ</button>
+            <button id="btnReset" onclick="resetLocalStorageSize()">СБРОС</button>
+        </div>
+
+    </div>
+    <div id="vk_groups" class="vk_groups"></div>
+
+
+    <style>
+        .wrapper {
+            margin: 20px 20px;
+            padding: 1px 15px 15px 15px;
+            width: 420px;
+            height: inherit;
+            background-color: rgb(252, 252, 194);
+            color: rgb(44, 42, 45);
+        }
+
+        .vk_groups {
+            position: absolute;
+            bottom: 4px;
+            right: 0;
+        }
+        button {
+            margin-top: 20px;
+            margin-right: 30px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        VK.Widgets.Group("vk_groups", { mode: 4, wide: 1, width: 300, height: 550, color1: "FFFFFF", color2: "000000", color3: "5181B8" }, 66084425);
+    </script>
+
+    <script type="text/javascript">
+        VK.init({
+            apiId: 51808381,
+            onlyWidgets: true
+        });
+    </script>
+
+    <script>
+
+
+        // Подсчитать максимальный объем данных, который можно записать в localStorage вашего браузера.
+        // Создаем локальные переменные с количеством кб в мб, наименованиями и тд
+        const UNIT_SIZE = 1024;
+        const UNITS = ["bytes", "KB", "MB", "GB"];
+        const TASK_COUNT = 10;
+        const INIT_VALUE = "";
+        const INIT_CHUNK_SIZE = Math.pow(2, 17); // Метод Math.pow() возвращает основание 2, возведённое в степень 17
+        const KEY_PREFIX = "item";
+
+        const context = {
+            active: true,
+            // Очищаем локальное хранилище, добавляем слушатель на кнопку прекращающую
+            init: () => {
+                localStorage.clear();
+
+                document.getElementById("btnStopTest").addEventListener("click", () => {
+                    context.active = false;
+                });
+            },
+            // Очищаем хранилище и удаляем кнопку по завершении функции
+            cleanup: () => {
+                localStorage.clear();
+                document.getElementById("btnStopTest").remove();
+            },
+            // Добавляем функцию, форматирующую результат
+            formatSize: (value) => {
+                let unitIndex = 0;
+                // Добавляем условие на формат данных умещающийся в 1024 и смену Кб на Мб и тд
+                while (value >= UNIT_SIZE && unitIndex < UNITS.length - 1) {
+                    value = value / UNIT_SIZE;
+                    unitIndex = unitIndex + 1;
+                }
+                // Форматируем в строку, 2 знака после запятой, убираем ненужные символы в формате "N КВ"
+                return `${value.toFixed(2).replace(/\.?0+$/, "")} ${UNITS[unitIndex]}`;
+            },
+            //Создаем элементы для вывода
+            createLabel: () => {
+                const label = document.createElement("div");
+                document.getElementById("result").appendChild(label);
+                return {
+                    update: (text) => (label.innerHTML = text),
+                    remove: () => label.remove()
+                };
+            },
+            //
+            task: (index) =>
+                new Promise((resolve) => {
+                    const key = `${KEY_PREFIX}${index}`;
+                    const label = context.createLabel();
+
+                    const pushData = (value, chunkSize) => {
+                        if (context.active && chunkSize > 0) {
+                            // Создаем переменную в которую будем записывать как значение в локалсторейдж
+                            const newValue =
+                                value +
+                                //Создаём новый массив на основе итерируемого или массивоподобного объекта.
+                                Array.from({ length: chunkSize })
+                                    //Создаём новый массив с результатом вызова функции для каждого элемента массива
+                                    .map(() => "X")
+                                    // Объединяем элементы массива в строку без пробелов
+                                    .join("");
+
+                            try {
+                                // Записываем в локальное хранилище
+                                localStorage.setItem(key, newValue);
+                                // Выводим процесс в виде: № : текст... форматированный
+                                label.update(
+                                    `#${index}: Вычисляем... ${context.formatSize(newValue.length)}`
+                                );
+                                setTimeout(() => pushData(newValue, chunkSize));
+                            } catch (e) {
+                                pushData(value, (chunkSize / 2) | 0);
+                            }
+                        } else {
+                            // Выводим результат!
+                            label.update(
+                                `#${index}: Готово! Сохраненное значение равно ${context.formatSize(
+                                    value.length
+                                )}`
+                            );
+
+                            resolve(value.length);
+                        }
+                    };
+
+                    pushData(INIT_VALUE, INIT_CHUNK_SIZE);
+                })
+
+
+        };
+        // Начинаем подсчет!
+        context.init();
+
+        // Считаем и выводим общий результат
+        Promise.all(
+            Array.from({ length: TASK_COUNT }).map((_, index) => context.task(index))
+        )
+            .then((results) => {
+                const label = context.createLabel();
+                const total = results.reduce((total, size) => total + size, 0);
+
+                label.update(
+                    `<br>Максимлаьный объем локального хранилища равен :  <strong>${context.formatSize(
+                        total
+                    )}</strong>`
+                );
+            })
+            .finally(() => {
+                context.cleanup();
+            });
+
+        // Текущее значение хранилища
+
+       
+        // function getLocalStorageSize() {
+            let startTest = document.querySelector('#btnStartTest');
+            let spanNow = document.querySelector('.storage-now');
+            let su = 0;
+
+            let localStorageLength = JSON.parse(localStorage.length);
+            
+
+        for (let i = 0; i < localStorageLength; i++) {
+                su += window.localStorage.getItem(localStorage.key(i));
+                spanNow.textContent = su.length + " символов";
+            };
+        function getLocalStorageSize() {
+            for (let i = 0; i < localStorageLength; i++) {
+                su += window.localStorage.getItem(localStorage.key(i));
+                spanNow.textContent = su.length + " символов";
+            };
+        }
+
+        function resetLocalStorageSize() {
+            window.localStorage.clear()
+            spanNow.textContent = "0 символов";
+            };
+        
+
+
+    </script>
+</body>
+
+</html>

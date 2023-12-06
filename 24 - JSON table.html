@@ -1,0 +1,104 @@
+<!-- // Разработайте страницу, отображающую таблицу с данными. Данные необходимо подгружать из этого источника.
+
+// Требования:
+// данные должны загружаться при загрузке страницы
+// необходимо реализовать сортировку по убыванию и по возрастания для всех колонок
+// необходимо реализовать клиентскую пагинацию (50 элементов на странице) -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, 
+    minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JSON таблица</title>
+</head>
+
+<body>
+  <div class="panel-body">
+    <table id="userdata" class="table">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Name</th>
+          <th onclick="sortTable(1)">Last name</th>
+          <th onclick="sortTable(2)">Tel</th>
+          <th onclick="sortTable(3)">Address</th>
+          <th onclick="sortTable(4)">City</th>
+          <th onclick="sortTable(5)">State</th>
+          <th onclick="sortTable(6)">Zip</th>
+        </tr>
+      </thead>
+      <tbody id="data-output">
+
+      </tbody>
+    </table>
+    <div class="paginator" onclick="pagination(event)"></div>
+  </div>
+
+  <style>
+    /* Стилизируем таблицу */
+    .table {
+      width: 100%;
+      margin-bottom: 20px;
+      border: 5px solid #fff;
+      border-top: 5px solid #fff;
+      border-bottom: 3px solid #fff;
+      border-collapse: collapse;
+      outline: 3px solid #ffd300;
+      font-size: 15px;
+      background: #fff !important;
+    }
+
+    .table th {
+      font-weight: bold;
+      padding: 7px;
+      background: #ffd300;
+      border: none;
+      text-align: left;
+      font-size: 15px;
+      border-top: 3px solid #fff;
+      border-bottom: 3px solid #ffd300;
+      cursor: pointer;
+    }
+
+    .table td {
+      padding: 7px;
+      border: none;
+      border-top: 3px solid #fff;
+      border-bottom: 3px solid #fff;
+      font-size: 15px;
+      /* width: 100%; */
+    }
+
+    .table tbody tr:nth-child(even) {
+      background: #f8f8f8 !important;
+    }
+
+   .nums {  
+    display: none;
+  }
+  .paginator {
+    line-height: 150%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .paginator > span {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: #ffd300;
+    padding: 1px 8px;
+    border-radius: 4px;
+  }
+  .paginator_active {
+    color: rgb(255, 5, 5);
+  }
+
+  </style>
+
+  <script src="./24.js"></script>
+</body>
+
+</html>
